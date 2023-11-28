@@ -1,0 +1,88 @@
+协议是数据的组织格式
+HTTP协议：应用层协议，用于网络通信，封装要传输的数据
+通过HTTP协议组织数据最终得到一个数据块（多行数据），换行需要“\r\n”
+// 客户端使用http传输数据发送给服务器
+    - 通过http协议组织数据 -> 得到一个字符串 -> 发送给服务器
+    - 接收数据 -> 根据http协议解析 -> 得到原始数据 -> 处理
+
+// 服务器
+    - 接收数据 -> 根据http协议解析 -> 得到原始数据 -> 处理
+    - 回复数据 -> 通过http组织数据 -> 得到一个字符串 -> 发送给客户端
+
+HTTP协议分为两部分:
+    HTTP请求：客户端给服务器发送数据的一种数据格式
+        1.请求行：指定提交数据的方式
+        2.请求头：多个键值对，客户端向服务器端发送数据描述，包含客户端身份描述符
+        3.空行：用以表示请求头结束
+        4.请求的数据：
+
+        两种提交数据的方式：在请求行中指定
+            GET：如果是使用GET方式提交数据，则数据不会在空行之后，而是在请求行的第二部分
+                示例：
+                GET /-0U_dTmfKgQFm2e88IuM_a/ps_fp.htm?pid=ps&fp=undefined&im=undefined&wf=undefined&br=3&qid=8abd28440001995f&bi=54871E6A399D7F2D8EEE7F405094A06F:FG=1&psid=54871E6A399D7F2DB99D42954D5D9C6E HTTP/1.1
+                Host: sp3.baidu.com
+                User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+                Accept: image/avif,image/webp,*/*
+                Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+                Accept-Encoding: gzip, deflate, br
+                Referer: https://www.baidu.com/s?wd=%E5%9D%9A%E5%AE%9A%E6%8E%A8%E8%BF%9B%E9%AB%98%E6%B0%B4%E5%B9%B3%E5%BC%80%E6%94%BE&sa=fyb_n_homepage&rsv_dl=fyb_n_homepage&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1
+                Connection: keep-alive
+                Cookie: BAIDUID=54871E6A399D7F2D8EEE7F405094A06F:FG=1; BIDUPSID=54871E6A399D7F2DB99D42954D5D9C6E; PSTM=1697080207; BDUSS=jh5QWVyRTZoZ35tVVhNU240LXFGWDdIT0NRflJHTzF2aUVSWEJBUGdjfkJJMDlsRVFBQUFBJCQAAAAAAAAAAAEAAADbCXVeQ2FwdGFpbjYxNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMGWJ2XBlidld; H_WISE_SIDS=234020_110085_268181_274777_270102_277354_277642_277635_275732_259642_278057_272560_278575_278791_278388_279021_279610_279009_279710_279998_280224_278415_280633_280720_280809_280105_280557_280635_267170_281036_280852_277969_281368_279202_281393_280371_280267_280650_281725; ZFY=j4LMNxBsgH0rnX8lNT3c5nJeknoVTN:AOVV5:B:AKEcclY:C; RT="z=1&dm=baidu.com&si=e6d8559b-6dc4-4e78-a8e7-c9fdb773907f&ss=lomh1vf1&sl=4&tt=38q&bcn=https%3A%2F%2Ffclog.baidu.com%2Flog%2Fweirwood%3Ftype%3Dperf&ld=3xky&ul=1p34a&hd=1p37r"; BAIDU_WISE_UID=wapp_1699001935762_147; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; arialoadData=false; BA_HECTOR=25202l2kal2l050g252104001ikhrhn1q; ab_sr=1.0.1_Zjk0NmE4NTM2NzA5ZWZhMzQ3N2Y4MmQ5MzMzNGM0ZTc0NTJhMmIwZjlkMzZhYzZkMWFmY2FiMDAwMjU2MmRjZDM1MTk2MmE2ZTc3MjZlYWYwNzg0MzExYWFiNTBjYTljMTQyOTU4MzAxYmI3ZjJiZjE4YWQwYzFjMDliMDgzZjQzMWUzZDdiMDkyZDA2Y2UzNDRlOTE2OWFmZWQ5MTA2MQ==; BDRCVFR[S4-dAuiWMmn]=I67x6TjHwwYf0; delPer=0; PSINO=1; H_PS_PSSID=39396_39530_39418_39592_39437_39525_39522_39497_39607_26350
+                Sec-Fetch-Dest: image
+                Sec-Fetch-Mode: no-cors
+                Sec-Fetch-Site: same-site
+
+                第一行：请求行
+                    第一部分：GET
+                    第二部分：中间部分
+                        /: 访问的服务器的资源目录
+                        ?之后的内容: 客户端向服务器提交的数据 
+                    第三部分：HTTP/1.1 -> HTTP协议的版本
+                剩下行：请求头
+                    若干个键值对，每个键值对占一行，使用\r\n换行
+
+            POST：复杂
+                除了客户端发送的数据在空行之后，其他与GET相同
+
+            GET与POST的区别：
+                功能上看：
+                    作为客户端，向服务器访问静态资源：网页、图片、文件。用GET
+                    作为客户端，向服务器提交动态数据：用户登录信息，上传下载文件。用POST
+                从数据量看：
+                    GET能操作的数据量较少，要显示到浏览器地址栏中，地址栏存储数据需要缓存，而这个缓存有上限，如果数据量太大会造成数据丢失
+                    POST可以操作大数据文件，POST提交数据不会显示在地址栏中
+                从安全性看：
+                    GET提交的数据直接显示在地址栏中，容易泄露
+                    POST数据不会泄露，提交的数据是看不到的
+
+    HTTP响应：服务器端给客户端回复数据的一种数据格式，与POST格式类似，数据在第四部分
+        1.状态行：
+            HTTP/1.1：HTTP协议的版本
+            200：状态码
+                1xx: 指示信息 - 表示请求已接收，继续处理
+                2xx: 成功 - 表示请求已被成功接收、理解、接受
+                3xx: 重定向 - 要完成请求必须进行更进一步
+                4xx: 客户端 - 请求有语法错误或请求无法实现
+                5xx: 服务器端错误 - 服务器未能实现合法的请求
+
+                常用状态码：
+                200 OK: 客户端请求成功
+                400 Bad Request: 客户端请求有语法错误，不能被服务器所理解
+                401 Unauthorized: 请求未经授权，这个状态代码必须和WWW-Authentic报头域一起使用
+                403 Forbiden: 服务器收到请求，但是拒绝提供服务
+                404 Not Found: 请求资源不存在，eg: 输入了错误的URL
+                500 Internal Server Error: 服务器发生了不可预期的错误
+                503 Server Unavailable: 服务器当前不能处理客户端的请求，一段时间后可能恢复正常
+
+            OK：对状态码的描述
+        2.响应头（消息报头）：n个键值对，里面的信息是服务器发送给客户端
+            Content-Length: 服务器给客户端回复的数据块长度 === http响应第四部分的数据块字节数
+                - 对应的value值必须是正确的数值
+                - 如果不知道数据块的字节数
+            Content-Type: 
+                - text/plain: 纯文本
+                - charset=iso-8895-1: 数据的字符编码
+                    - utf8: 支持中文
+                    - iso-8895-1: 不支持中文
+        3.空行：用以表示请求头结束
+        4.响应数据：服务器给客户端回复的数据
